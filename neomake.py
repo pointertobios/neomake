@@ -155,6 +155,8 @@ class Target:
             return tartime < deptime
 
     def make(self, options=[]):
+        if not making.value:
+            fail(color.lred + 'start_neomake() not called.' + color.reset)
         self.fill_dependents(options)
         if not self.should_make():
             return
@@ -168,6 +170,8 @@ class Target:
             self.making(self.path, deplist)
 
     def clear(self):
+        if not making.value:
+            fail(color.lred + 'start_neomake() not called.' + color.reset)
         if not self.static and self.path != None and os.path.exists(self.path):
             print(color.lred + 'removing' + color.reset, self.path)
             os.remove(self.path)
@@ -183,11 +187,11 @@ class TargetGroup:
             self.targets.append(Target(key, val, making))
 
 
-making = multiprocessing.Value('i', 1)
+making = multiprocessing.Value('i', 0)
 
 
 def start_neomake():
-    pass
+    making.value = 1
 
 
 def end_neomake():
