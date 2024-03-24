@@ -25,8 +25,8 @@ def wait_until_pool_end(cmd, direc):
 
 
 class Rust:
-    def __init__(self, source, target, flags=[]) -> None:
-        cmd = 'rustc '
+    def __init__(self, source, target, flags=[], rustc='rustc') -> None:
+        cmd = rustc + ' '
         for f in flags:
             cmd += f + ' '
         cmd += '"' + source + '" '
@@ -38,19 +38,19 @@ class Rust:
 
 
 class Linker:
-    def __init__(self, source: list[str] | str, target, linklib=list[str], ldscript: str | None = None, flags=[]):
-        cmd = "ld "
+    def __init__(self, source: list[str] | str, target, linklib: list[str] = [], ldscript: str | None = None, flags=[], linker='ld'):
+        cmd = linker + ' '
         if ldscript != None:
             cmd += '-T "' + ldscript + '" '
         for f in flags:
             cmd += f + ' '
+        for l in linklib:
+            cmd += '"' + l + '" '
         if type(source) == str:
             cmd += '"' + source + '" '
         else:
             for s in source:
                 cmd += '"' + s + '" '
-        for l in linklib:
-            cmd += '"' + l + '" '
         cmd += '-o "' + target + '"'
         plasma = color.lyellow + 'ld' + color.reset + ' ' + color.lgreen + \
             target + color.reset + ' ' + color.blue + '<--' + color.reset + ' '
@@ -63,3 +63,28 @@ class Linker:
         threading.Thread(
             target=wait_until_pool_end,
             args=(cmd, os.getcwd())).start()
+
+
+class C:
+    def __init__(self, source: list[str] | str, target, linklib: list[str] = [], flags=[], cc='gcc'):
+        cmd = cc + ' '
+        for f in flags:
+            cmd += f + ' '
+        for l in linklib:
+            cmd += '-l' + l + ' '
+        if type(source) == str:
+            cmd += '"' + source + '" '
+        else:
+            for s in source:
+                cmd += '"' + s + '" '
+        cmd += '-o "' + target + '"'
+        plasma = color.lyellow + cc + color.reset + ' '
+        if type(source) == str:
+            plasma += color.green + source + color.reset + ' '
+        else:
+            for s in source:
+                plasma += color.green + s + color.reset + ' '
+        plasma += color.blue + '-->' + color.reset + ' '
+        plasma += color.lgreen + target + color.reset
+        print(plasma)
+        dispatch_command(cmd)

@@ -6,6 +6,7 @@ import platform as __pf
 import os
 import sys
 import multiprocessing
+import hashlib
 
 
 sys.path.append(os.path.dirname(__file__))
@@ -125,7 +126,7 @@ def touch(file):
 
 
 class Target:
-    def __init__(self, path: str | None, dependents, making, static = False):
+    def __init__(self, path: str | None, dependents, making, static=False):
         self.path = path
         self.dependents = dependents
         self.making = making
@@ -157,7 +158,7 @@ class Target:
             for d in self.dependents:
                 deplist.append(d.path)
             self.making(self.path, deplist)
-    
+
     def clear(self):
         if not self.static and self.path != None and os.path.exists(self.path):
             os.remove(self.path)
@@ -190,3 +191,12 @@ setattr(nmprofiles, 'mpool', mpool)
 setattr(nmprofiles, 'color', color)
 setattr(nmprofiles, 'making', making)
 setattr(nmprofiles, 'fail', fail)
+
+
+def md5sum(s):
+    md5 = hashlib.md5()
+    md5.update(s.encode('utf-8'))
+    return md5.hexdigest()
+
+
+global_metadata = {}
