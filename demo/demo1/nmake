@@ -1,4 +1,0 @@
-def demo1_out(dep = ("src/main.c", "src/lib.c")):
-    profile.c(target, dep)
-
-targets = [demo1_out]
