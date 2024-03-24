@@ -134,7 +134,8 @@ class Target:
 
     def fill_dependents(self, options):
         for tar in self.dependents:
-            tar.make(options)
+            if type(tar) != str: # 忽略字符串类型的依赖目标，因为字符串类型的依赖目标通常是源代码
+                tar.make(options)
 
     def should_make(self) -> bool:
         if self.path == None:
@@ -145,8 +146,12 @@ class Target:
             tartime = os.path.getmtime(self.path)
             deptime = 0
             for dep in self.dependents:
-                if os.path.exists(dep.path):
-                    deptime = max(deptime, os.path.getmtime(dep.path))
+                if type(dep) == str:
+                    if os.path.exists(dep):
+                        deptime = max(deptime, os.path.getmtime(dep))
+                else:
+                    if os.path.exists(dep.path):
+                        deptime = max(deptime, os.path.getmtime(dep.path))
             return tartime < deptime
 
     def make(self, options):
@@ -156,14 +161,26 @@ class Target:
         if self.making != None:
             deplist = []
             for d in self.dependents:
-                deplist.append(d.path)
+                if type(d) != str:
+                    deplist.append(d.path)
+                else:
+                    deplist.append(d)
             self.making(self.path, deplist)
 
     def clear(self):
+        print('try remove', os.getcwd() + '/' + str(self.path))
         if not self.static and self.path != None and os.path.exists(self.path):
             os.remove(self.path)
         for dep in self.dependents:
-            dep.clear()
+            if type(dep) != str:
+                dep.clear()
+
+
+class TargetGroup:
+    targets = []
+    def __init__(self, targets: dict, making):
+        for key, val in targets.items():
+            self.targets.append(Target(key, val, making))
 
 
 making = multiprocessing.Value('i', 1)

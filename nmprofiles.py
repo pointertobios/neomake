@@ -1,4 +1,5 @@
 import os
+import sys
 import time
 import threading
 
@@ -66,8 +67,10 @@ class Linker:
 
 
 class C:
-    def __init__(self, source: list[str] | str, target, linklib: list[str] = [], flags=[], cc='gcc'):
+    def __init__(self, source: list[str] | str, target, linklib: list[str] = [], flags=[], cc='gcc', compile_only=False):
         cmd = cc + ' '
+        if compile_only:
+            cmd += '-c '
         for f in flags:
             cmd += f + ' '
         for l in linklib:
