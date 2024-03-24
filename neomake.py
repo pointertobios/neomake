@@ -154,7 +154,7 @@ class Target:
                         deptime = max(deptime, os.path.getmtime(dep.path))
             return tartime < deptime
 
-    def make(self, options):
+    def make(self, options=[]):
         self.fill_dependents(options)
         if not self.should_make():
             return
@@ -168,8 +168,8 @@ class Target:
             self.making(self.path, deplist)
 
     def clear(self):
-        print('try remove', os.getcwd() + '/' + str(self.path))
         if not self.static and self.path != None and os.path.exists(self.path):
+            print(color.lred + 'removing' + color.reset, self.path)
             os.remove(self.path)
         for dep in self.dependents:
             if type(dep) != str:

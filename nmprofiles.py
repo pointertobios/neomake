@@ -34,7 +34,7 @@ class Rust:
         cmd += '-o "' + target + '"'
         print(
             color.lyellow + 'rustc' + color.reset + ' ' + color.blue +
-            '-->' + color.reset + ' ' + color.lgreen + ' ' + target + color.reset)
+            '-->' + color.reset + ' ' + color.lgreen + target + color.reset)
         dispatch_command(cmd)
 
 
