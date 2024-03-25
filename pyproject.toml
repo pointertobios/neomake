@@ -1,6 +1,6 @@
 [project]
-name = "neomake_pointer-to-bios"
-version = "0.0.1"
+name = "neomake"
+version = "0.0.2"
 authors = [
   { name="Random World Studio", email="pointer-to-bios@outlook.com" },
 ]
