@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
-import nmprofiles
-from nmprofiles import *
+from . import nmprofiles
+from .nmprofiles import *
 import platform as __pf
 import os
 import sys
