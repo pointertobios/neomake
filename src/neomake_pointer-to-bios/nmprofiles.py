@@ -1,5 +1,4 @@
 import os
-import sys
 import time
 import threading
 
@@ -20,6 +19,7 @@ def dispatch_command(cmd):
 
 
 def wait_until_pool_end(cmd, direc):
+    global making
     while making.value:
         time.sleep(0.001)
     runcommand(cmd, direc)
@@ -87,6 +87,21 @@ class C:
         else:
             for s in source:
                 plasma += color.green + s + color.reset + ' '
+        plasma += color.blue + '-->' + color.reset + ' '
+        plasma += color.lgreen + target + color.reset
+        print(plasma)
+        dispatch_command(cmd)
+
+
+class Asm:
+    def __init__(self, source: str, target, flags=[], asm='as'):
+        cmd = asm + ' '
+        for f in flags:
+            cmd += f + ' '
+        cmd += ' "' + source + '" '
+        cmd += '-o "' + target + '"'
+        plasma = color.lyellow + asm + color.reset + ' '
+        plasma += color.green + source + color.reset + ' '
         plasma += color.blue + '-->' + color.reset + ' '
         plasma += color.lgreen + target + color.reset
         print(plasma)

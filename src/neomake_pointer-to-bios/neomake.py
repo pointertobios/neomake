@@ -134,7 +134,7 @@ class Target:
 
     def fill_dependents(self, options):
         for tar in self.dependents:
-            if type(tar) != str: # 忽略字符串类型的依赖目标，因为字符串类型的依赖目标通常是源代码
+            if type(tar) != str:  # 忽略字符串类型的依赖目标，因为字符串类型的依赖目标通常是源代码
                 tar.make(options)
 
     def should_make(self) -> bool:
@@ -182,9 +182,26 @@ class Target:
 
 class TargetGroup:
     targets = []
+
     def __init__(self, targets: dict, making):
         for key, val in targets.items():
             self.targets.append(Target(key, val, making))
+
+
+class FileList:
+    def __init__(self, dirlist: list[str]):
+        self.dirlist = dirlist + ['./']
+
+    def list(self, _type: str):
+        res = []
+        for dirx in self.dirlist:
+            if not dirx.endswith('/'):
+                dirx += '/'
+            for root, dirs, files in os.walk(dirx):
+                for f in files:
+                    res.append(dirx + f)
+        res = [f for f in res if f.endswith(_type)]
+        return res
 
 
 making = multiprocessing.Value('i', 0)

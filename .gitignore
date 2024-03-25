@@ -1,3 +1,4 @@
 *_out
 Metaverse
-__pycache__
+dist
+*.egg-info
